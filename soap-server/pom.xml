@@ -21,6 +21,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.modules>java.xml.bind,java.xml.ws</java.modules>
 		<java.version>9</java.version>
 
 		<apache-cxf-version>3.2.1</apache-cxf-version>
@@ -72,6 +73,65 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<compilerArgs>
+						<arg>--add-modules</arg>
+						<arg>${java.modules}</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+
+			<!-- Generate a WSDL based on SOAP web service implementations. -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxws-maven-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>wsgen</goal>
+						</goals>
+						<configuration>
+							<sei>org.nerdcoding.example.soap.server.web.WeatherEndpoint</sei>
+							<genWsdl>true</genWsdl>
+							<inlineSchemas>true</inlineSchemas>
+							<resourceDestDir>${project.build.directory}/generated-sources/wsdl</resourceDestDir>
+							<executable>${java.home}/bin/wsgen</executable>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Copy the generated WSDL into the resources output. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}/generated-sources/wsdl</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

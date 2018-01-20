@@ -20,10 +20,15 @@ package org.nerdcoding.example.soap.server;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
+import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.transport.servlet.CXFServlet;
+import org.nerdcoding.example.soap.server.web.WeatherEndpoint;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.xml.ws.Endpoint;
 
 /**
  * Configures the usage of Apache CXF as JAX-WS implementation in Spring Boot.
@@ -32,6 +37,7 @@ import org.springframework.context.annotation.Configuration;
 public class SoapWebServiceConfiguration {
 
     public static final String BASE_URL = "/api/soap";
+    private static final String WEB_SERVICE_WSDL_SUFFIX = "Service.wsdl";
 
     /**
      * The {@link SpringBus} gets the Apache CXF framework up and running, with all needed CXF modules.
@@ -53,6 +59,33 @@ public class SoapWebServiceConfiguration {
     public ServletRegistrationBean dispatcherServlet() {
         // The "CXFServlet" handles all SOAP calls to the URI '/soap-api/*'.
         return new ServletRegistrationBean<>(new CXFServlet(), BASE_URL + "/*");
+    }
+
+    /**
+     * Register the SOAP web service implementation as Spring bean.
+     *
+     * @return The {@link WeatherEndpoint} instance.
+     */
+    @Bean
+    public WeatherEndpoint weatherEndpoint() {
+        return new WeatherEndpoint();
+    }
+
+    /**
+     * Publish the SOAP web services.
+     *
+     * @param springBus The Apache CXF {@link SpringBus}.
+     * @param weatherEndpoint The SOAP web service to publish
+     * @return The created web service {@link Endpoint}.
+     */
+    @Bean
+    public Endpoint endpoint(
+            @Qualifier(Bus.DEFAULT_BUS_ID) final SpringBus springBus,
+            final WeatherEndpoint weatherEndpoint) {
+        EndpointImpl endpoint = new EndpointImpl(springBus, weatherEndpoint);
+        endpoint.publish("/" + WeatherEndpoint.class.getSimpleName());
+        endpoint.setWsdlLocation(WeatherEndpoint.class.getSimpleName() + WEB_SERVICE_WSDL_SUFFIX);
+        return endpoint;
     }
 
 }
