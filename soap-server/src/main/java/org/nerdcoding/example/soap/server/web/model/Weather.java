@@ -18,6 +18,10 @@
 
 package org.nerdcoding.example.soap.server.web.model;
 
+import org.nerdcoding.example.soap.server.web.model.adapter.LocalDateAdapter;
+
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -31,6 +35,8 @@ public class Weather {
     private Location location;
     private Temperature temperature;
 
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
+    @XmlSchemaType(name="dateTime")
     public LocalDate getDay() {
         return day;
     }
