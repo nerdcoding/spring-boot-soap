@@ -22,6 +22,7 @@ import org.nerdcoding.example.soap.server.web.Weather;
 import org.nerdcoding.example.soap.server.web.WeatherEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,9 +40,9 @@ public class ClientRestController {
         this.weatherEndpoint = weatherEndpoint;
     }
 
-    @GetMapping("/weather")
-    public Weather callSoapWebService() {
-        return weatherEndpoint.getWeather();
+    @GetMapping("/weather/{city}")
+    public Weather callSoapWebService(@PathVariable("city") final String city) {
+        return weatherEndpoint.getWeather(city);
     }
 
 }

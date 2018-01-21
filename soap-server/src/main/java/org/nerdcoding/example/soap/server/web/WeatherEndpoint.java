@@ -33,13 +33,13 @@ import java.time.LocalDate;
 public class WeatherEndpoint {
 
     @WebMethod
-    public Weather getWeather() {
+    public Weather getWeather(final String city) {
         final Temperature temperature = new Temperature();
         temperature.setValue(27.8);
         temperature.setScale("°C");
 
         final Location location = new Location();
-        location.setCity("Hamburg");
+        location.setCity(city);
         location.setState("Hamburg");
         location.setCountry("Germany");
 
