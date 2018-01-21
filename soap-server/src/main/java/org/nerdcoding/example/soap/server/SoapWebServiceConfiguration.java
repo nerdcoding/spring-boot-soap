@@ -36,7 +36,7 @@ import javax.xml.ws.Endpoint;
 @Configuration
 public class SoapWebServiceConfiguration {
 
-    public static final String BASE_URL = "/api/soap";
+    public static final String BASE_URL = "/server/api/soap";
     private static final String WEB_SERVICE_WSDL_SUFFIX = "Service.wsdl";
 
     /**
@@ -57,7 +57,6 @@ public class SoapWebServiceConfiguration {
      */
     @Bean
     public ServletRegistrationBean dispatcherServlet() {
-        // The "CXFServlet" handles all SOAP calls to the URI '/soap-api/*'.
         return new ServletRegistrationBean<>(new CXFServlet(), BASE_URL + "/*");
     }
 
