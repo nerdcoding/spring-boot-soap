@@ -1,0 +1,62 @@
+
+Small sample applications to integration SOAP web services with http://cxf.apache.org/[Apache CXF]
+into https://projects.spring.io/spring-boot/[Spring Boot 2].
+
+There are two independent applications:
+
+* `soap-server` implements a SOAP based web service with the name `WeatherEndpoint`. The WSDL describing this web
+service is available at `http://127.0.0.1:8080/server/api/soap/WeatherEndpoint?wsdl`. The generation of the WSDL is done
+with the `jaxws-maven-plugin` which only calls the JDKs default https://docs.oracle.com/javase/9/tools/wsgen.htm[wsgen].
+* `soap-client` consumes the `WeatherEndpoint`. Based on the WSDL provided by the server the `jaxws-maven-plugin` is
+able to generate the web service stubs with the usage of the JDKs default
+https://docs.oracle.com/javase/9/tools/wsimport.htm[wsimport]. The client also provides a small REST endpoint to
+initiate a SOAP call to the server. This REST endpoint is available at
+`GET http://127.0.0.1:8082/client/api/rest/weather`
+
+=== Build applications
+
+To build applications http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java SE 9] and
+http://maven.apache.org/[Maven 3.5.2] (or newer) needs to be installed.
+
+The build is done with a simple:
+```
+mvn clean install
+```
+
+for the `soap-server` and also for the `soap-client`.
+
+=== Start applications
+
+The applications could be started with:
+```
+java --add-modules java.xml.bind,java.xml.ws -jar target/<jar-name>.jar
+```
+
+=== Licensing
+The software of this repository is licensed under the GNU General Public License v2.
+See [LICENSE](https://www.gnu.org/licenses/gpl-2.0.html) for the full license text.
+
+=== JDK 9 modules
+
+The JDK 9 modules `java.xml.bind` are required `java.xml.ws` to compile and run the applications.
+
+==== Maven compile
+```
+<compilerArgs>
+    <arg>--add-modules</arg>
+    <arg>java.xml.bind,java.xml.ws</arg>
+</compilerArgs>
+```
+
+==== IntelliJ compile
+File | Settings | Build, Execution, Deployment | Compiler | Java Compile +
+Additional command line parameters: `--add-modules java.xml.bind,java.xml.ws`
+
+==== Run with java
+```
+java --add-modules java.xml.bind,java.xml.ws -jar target/<jar-name>.jar
+```
+
+==== Run with IntelliJ
+Edit Configurations... +
+VM options: `--add-modules java.xml.bind,java.xml.ws`
