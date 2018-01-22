@@ -1,5 +1,5 @@
 /*
- * InfoService.java
+ * WeatherEndpoint.java
  *
  * Copyright (c) 2018, Tobias Koltsch. All rights reserved.
  *
@@ -18,38 +18,18 @@
 
 package org.nerdcoding.example.soap.server.web;
 
-import org.nerdcoding.example.soap.server.web.model.Location;
-import org.nerdcoding.example.soap.server.web.model.Temperature;
 import org.nerdcoding.example.soap.server.web.model.Weather;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
-import java.time.LocalDate;
 
 /**
  * SOAP based web service to deliver weather information.
  */
 @WebService
-public class WeatherEndpoint {
+public interface WeatherEndpoint {
 
     @WebMethod
-    public Weather getWeather(final String city) {
-        final Temperature temperature = new Temperature();
-        temperature.setValue(27.8);
-        temperature.setScale("°C");
-
-        final Location location = new Location();
-        location.setCity(city);
-        location.setState("Hamburg");
-        location.setCountry("Germany");
-
-        final Weather weather = new Weather();
-        weather.setDay(LocalDate.of(2017, 4, 23));
-        weather.setDescription("Sunny");
-        weather.setTemperature(temperature);
-        weather.setLocation(location);
-
-        return weather;
-    }
+    Weather getWeather(final String city);
 
 }

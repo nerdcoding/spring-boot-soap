@@ -23,6 +23,7 @@ import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.nerdcoding.example.soap.server.web.WeatherEndpoint;
+import org.nerdcoding.example.soap.server.web.WeatherEndpointImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -63,25 +64,25 @@ public class SoapWebServiceConfiguration {
     /**
      * Register the SOAP web service implementation as Spring bean.
      *
-     * @return The {@link WeatherEndpoint} instance.
+     * @return The {@link WeatherEndpointImpl} instance.
      */
     @Bean
     public WeatherEndpoint weatherEndpoint() {
-        return new WeatherEndpoint();
+        return new WeatherEndpointImpl();
     }
 
     /**
      * Publish the SOAP web services.
      *
      * @param springBus The Apache CXF {@link SpringBus}.
-     * @param weatherEndpoint The SOAP web service to publish
+     * @param weatherEndpoint The SOAP web service to publish.
      * @return The created web service {@link Endpoint}.
      */
     @Bean
     public Endpoint endpoint(
             @Qualifier(Bus.DEFAULT_BUS_ID) final SpringBus springBus,
             final WeatherEndpoint weatherEndpoint) {
-        EndpointImpl endpoint = new EndpointImpl(springBus, weatherEndpoint);
+        final EndpointImpl endpoint = new EndpointImpl(springBus, weatherEndpoint);
         endpoint.publish("/" + WeatherEndpoint.class.getSimpleName());
         endpoint.setWsdlLocation(WeatherEndpoint.class.getSimpleName() + WEB_SERVICE_WSDL_SUFFIX);
         return endpoint;
